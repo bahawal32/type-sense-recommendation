@@ -2,3 +2,4 @@ data
 typesense-data
 typesense.env
 .gitignore
+fastapi-app/sample-data.json
