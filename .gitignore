@@ -1,2 +1,4 @@
 data
 typesense-data
+typesense.env
+.gitignore
