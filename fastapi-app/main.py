@@ -12,17 +12,23 @@ def startup_event():
 def root():
     return {"message": "Typesense Recommendation API"}
 
-@app.get("/recommend/{user_id}/{item_id}")
-def recommend(user_id: str, item_id: str, model: str = "item-item"):
-    doc_id = f"{user_id}:{item_id}"
+
+@app.get("/search")
+def search(
+    q: str,
+    query_by: str,
+    sort_by: str = None,
+    collection: str = "books"
+):
+    search_parameters = {
+        "q": q,
+        "query_by": query_by
+    }
+    if sort_by:
+        search_parameters["sort_by"] = sort_by
 
     try:
-        result = client.collections["user_likes"].documents.recommend(
-            document_id=doc_id,
-            model=model,
-            per_page=5,
-            include_fields=["item_id"]
-        )
+        result = client.collections[collection].documents.search(search_parameters)
         return result
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
