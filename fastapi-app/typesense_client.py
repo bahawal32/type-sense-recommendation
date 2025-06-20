@@ -1,5 +1,7 @@
 import typesense
 import os
+import logging
+logger = logging.getLogger(__name__)
 
 TYPESENSE_HOST = os.getenv("TYPESENSE_HOST", "typesense")
 TYPESENSE_PORT = os.getenv("TYPESENSE_PORT", "8108")
@@ -16,25 +18,29 @@ client = typesense.Client({
 })
 
 def init_schema():
-    schema = {
-        "name": "user_likes",
-        "fields": [
-            {"name": "user_id", "type": "string"},
-            {"name": "item_id", "type": "string"},
-            {"name": "score", "type": "float"}
+    logger.info("Initializing Typesense schema...")
+    books_schema = {
+        'name': 'books',
+        'fields': [
+            {'name': 'title', 'type': 'string' },
+            {'name': 'authors', 'type': 'string[]', 'facet': True },
+
+            {'name': 'publication_year', 'type': 'int32', 'facet': True },
+            {'name': 'ratings_count', 'type': 'int32' },
+            {'name': 'average_rating', 'type': 'float' }
         ],
-        "default_sorting_field": "score"
+        'default_sorting_field': 'ratings_count'
     }
 
     try:
-        client.collections.create(schema)
+        logger.info("Creating collection 'books'...")
+        client.collections.create(books_schema)
     except Exception:
-        pass  # Collection might already exist
+        logger.warning("Collection 'books' already exists or could not be created.")
+        pass
+        
 
 def import_sample_data():
-    import json
-
-    with open("sample-data.json") as f:
-        records = json.load(f)
-
-    client.collections['user_likes'].documents.import_(records, {'action': 'upsert'})
+    logger.info("Importing sample data into Typesense...")
+    with open('books.jsonl') as jsonl_file:
+        client.collections['books'].documents.import_(jsonl_file.read().encode('utf-8'))
