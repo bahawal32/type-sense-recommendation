@@ -15,5 +15,7 @@ services:
       - TYPESENSE_HOST=typesense
       - TYPESENSE_PORT=8108
       - TYPESENSE_API_KEY=xyz
+      - TYPESENSE_CLUSTERING_ENABLED=false
+      - TOKEN=${TOKEN}
     depends_on:
       - typesense
