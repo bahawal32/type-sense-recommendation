@@ -4,15 +4,21 @@ from typesense_client import client, init_schema, import_sample_data
 app = FastAPI()
 import logging
 logger = logging.getLogger(__name__)
-@app.on_event("startup")
-def startup_event():
-    init_schema()
-    import_sample_data()
 
 @app.get("/")
 def root():
     return {"message": "Typesense Recommendation API"}
 
+@app.post("/init")
+def initialize_typesense():
+    """Initialize Typesense schema and import sample data."""
+    try:
+        init_schema()
+        import_sample_data()
+        return {"message": "Typesense schema initialized and sample data imported."}
+    except Exception as e:
+        logger.error(f"Error initializing Typesense: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/search")
 def search(
