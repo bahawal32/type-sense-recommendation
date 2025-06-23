@@ -37,7 +37,7 @@ def init_schema():
   
         
 
-def import_sample_data():
+def import_sample_data(filepath='News_Category_Dataset_v3.jsonl', collection_name='news_articles'):
     logger.info("Importing sample data into Typesense...")
-    with open('News_Category_Dataset_v3.jsonl') as jsonl_file:
-        client.collections['news_articles'].documents.import_(jsonl_file.read().encode('utf-8'))
+    with open(filepath) as jsonl_file:
+        client.collections[collection_name].documents.import_(jsonl_file.read().encode('utf-8'))
