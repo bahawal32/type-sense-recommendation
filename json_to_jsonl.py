@@ -1,5 +1,7 @@
 import json
 import argparse
+import unicodedata
+from tqdm import tqdm
 
 
 def clean_text(text):
