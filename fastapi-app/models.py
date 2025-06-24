@@ -15,7 +15,7 @@ class FieldSchema(BaseModel):
 class CollectionSchema(BaseModel):
     name: str
     fields: List[FieldSchema]
-    default_sorting_field: Optional[str]
+    default_sorting_field: Optional[str] = None  
 
     @validator("name")
     def name_must_be_alphanumeric(cls, v):
