@@ -2,7 +2,8 @@ from fastapi import APIRouter, HTTPException
 from typesense_client import client
 import logging
 
-logger = logging.getLogger(__name__)
+
+logger = logging.getLogger("uvicorn.info")  # or "uvicorn.error"
 router = APIRouter()
 
 @router.get("/search")
@@ -17,7 +18,8 @@ def search(
     """
     search_parameters = {
         "q": q,
-        "query_by": query_by
+        "query_by": query_by,
+        "per_page": 20,  # Default to 20 results per page
     }
     if sort_by:
         search_parameters["sort_by"] = sort_by
